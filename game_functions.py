@@ -1,4 +1,5 @@
 import pygame
+import json
 import sys
 from bullet import Bullet
 from alien import Alien
@@ -25,6 +26,7 @@ def check_events(ai_settings, screen, ship, aliens, bullets, stats, play_button,
     """Respond to user events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            save_high_score(stats)
             sys.exit()
         elif event.type == pygame.KEYDOWN:
             check_keydown_events(event, ai_settings, screen, ship, bullets)
@@ -186,3 +188,15 @@ def manage_scoreboard(sb):
     sb.prep_level()
     sb.prep_ships()
     sb.prep_high_score()
+
+
+def save_high_score(stats):
+    file_name = "high_score.json"
+    with open(file_name, 'w') as f_obj:
+        json.dump(stats.high_score, f_obj)
+
+
+def load_high_score(stats):
+    file_name = "high_score.json"
+    with open(file_name, 'r') as f_obj:
+        stats.high_score = json.load(f_obj)

@@ -7,7 +7,7 @@ from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
 from pygame.time import Clock
-import time
+
 
 def run_game():
     pygame.init()
@@ -19,6 +19,7 @@ def run_game():
     bullets = Group()
     aliens = Group()
     score = Scoreboard(ai_settings, screen, stats)
+    gf.load_high_score(stats)
     play_button = Button(ai_settings, screen, "Play")
     gf.create_fleet(ai_settings, screen, aliens, ship)
     clock = Clock()

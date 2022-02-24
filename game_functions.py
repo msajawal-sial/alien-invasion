@@ -121,7 +121,6 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets, sb):
     aliens.update()
 
     if pygame.sprite.spritecollideany(ship, aliens):
-        print("Ship Hit Alien")
         ship_hit(ai_settings, stats, screen, ship, aliens, bullets, sb)
     else:
         check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, sb)
@@ -130,7 +129,6 @@ def update_aliens(ai_settings, stats, screen, ship, aliens, bullets, sb):
 def ship_hit(ai_settings, stats, screen, ship, aliens, bullets, sb):
     stats.ships_left -= 1
     sb.prep_ships()
-    print("Lives Left:", stats.ships_left)
     if stats.ships_left > 0:
         bullets.empty()
         aliens.empty()

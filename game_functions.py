@@ -41,13 +41,14 @@ def check_play_button(mouse_x, mouse_y, stats, play_button, aliens, bullets, shi
         stats.game_active = True
         ai_settings.initialize_dynamic_settings()
         stats.reset_stats()
-        sb.prep_score()
-        sb.prep_level()
+
         aliens.empty()
         bullets.empty()
 
         create_fleet(ai_settings, screen, aliens, ship)
         ship.center_ship()
+
+        manage_scoreboard(sb)
 
 
 def update_screen(ai_settings, screen, ship, aliens, bullets, stats, play_button, score):
@@ -115,19 +116,20 @@ def create_fleet(ai_settings, screen, aliens, ship):
             aliens.add(alien)
 
 
-def update_aliens(ai_settings, stats, screen, ship, aliens, bullets):
+def update_aliens(ai_settings, stats, screen, ship, aliens, bullets, sb):
     check_fleet_edges(ai_settings, aliens)
     aliens.update()
 
     if pygame.sprite.spritecollideany(ship, aliens):
         print("Ship Hit Alien")
-        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+        ship_hit(ai_settings, stats, screen, ship, aliens, bullets, sb)
     else:
-        check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets)
+        check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, sb)
 
 
-def ship_hit(ai_settings, stats, screen, ship, aliens, bullets):
+def ship_hit(ai_settings, stats, screen, ship, aliens, bullets, sb):
     stats.ships_left -= 1
+    sb.prep_ships()
     print("Lives Left:", stats.ships_left)
     if stats.ships_left > 0:
         bullets.empty()
@@ -163,15 +165,15 @@ def check_bullets_alien_collision(ai_settings, screen, aliens, ship, bullets, st
         bullets.empty()
         ai_settings.increase_speed()
         stats.level += 1
-        sb.prep_level()
         create_fleet(ai_settings, screen, aliens, ship)
+        manage_scoreboard(sb)
 
 
-def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
+def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets, sb):
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
-            ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
+            ship_hit(ai_settings, stats, screen, ship, aliens, bullets, sb)
             break
 
 
@@ -179,3 +181,10 @@ def check_high_score(stats, sb):
     if stats.score > stats.high_score:
         stats.high_score = stats.score
         sb.prep_high_score()
+
+
+def manage_scoreboard(sb):
+    sb.prep_score()
+    sb.prep_level()
+    sb.prep_ships()
+    sb.prep_high_score()

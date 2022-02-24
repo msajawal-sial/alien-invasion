@@ -42,6 +42,7 @@ def check_play_button(mouse_x, mouse_y, stats, play_button, aliens, bullets, shi
         ai_settings.initialize_dynamic_settings()
         stats.reset_stats()
         sb.prep_score()
+        sb.prep_level()
         aliens.empty()
         bullets.empty()
 
@@ -157,11 +158,14 @@ def check_bullets_alien_collision(ai_settings, screen, aliens, ship, bullets, st
     if collisions:
         stats.score += (ai_settings.alien_points * len(collisions))
         sb.prep_score()
-        check_high_score(stats,sb)
+        check_high_score(stats, sb)
     if len(aliens) == 0:
         bullets.empty()
         ai_settings.increase_speed()
+        stats.level += 1
+        sb.prep_level()
         create_fleet(ai_settings, screen, aliens, ship)
+
 
 def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
     screen_rect = screen.get_rect()

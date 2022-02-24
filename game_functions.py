@@ -21,7 +21,7 @@ def check_keydown_events(event, ai_settings, screen, ship, bullets):
         fire_bullet(ai_settings, screen, ship, bullets)
 
 
-def check_events(ai_settings, screen, ship, aliens, bullets, stats, play_button):
+def check_events(ai_settings, screen, ship, aliens, bullets, stats, play_button, sb):
     """Respond to user events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -32,16 +32,16 @@ def check_events(ai_settings, screen, ship, aliens, bullets, stats, play_button)
             check_keyup_events(event, ship)
         elif event.type == pygame.MOUSEBUTTONDOWN:
             mouse_x, mouse_y = pygame.mouse.get_pos()
-            check_play_button(mouse_x, mouse_y, stats, play_button, aliens, bullets, ship, screen, ai_settings)
+            check_play_button(mouse_x, mouse_y, stats, play_button, aliens, bullets, ship, screen, ai_settings, sb)
 
 
-def check_play_button(mouse_x, mouse_y, stats, play_button, aliens, bullets, ship, screen, ai_settings):
+def check_play_button(mouse_x, mouse_y, stats, play_button, aliens, bullets, ship, screen, ai_settings, sb):
     if play_button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
         pygame.mouse.set_visible(False)
         stats.game_active = True
         ai_settings.initialize_dynamic_settings()
         stats.reset_stats()
-
+        sb.prep_score()
         aliens.empty()
         bullets.empty()
 
@@ -157,6 +157,7 @@ def check_bullets_alien_collision(ai_settings, screen, aliens, ship, bullets, st
     if collisions:
         stats.score += (ai_settings.alien_points * len(collisions))
         sb.prep_score()
+        check_high_score(stats,sb)
     if len(aliens) == 0:
         bullets.empty()
         ai_settings.increase_speed()
@@ -168,3 +169,9 @@ def check_aliens_bottom(ai_settings, stats, screen, ship, aliens, bullets):
         if alien.rect.bottom >= screen_rect.bottom:
             ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
             break
+
+
+def check_high_score(stats, sb):
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        sb.prep_high_score()

@@ -1,9 +1,10 @@
 import pygame
+from pygame.sprite import Sprite
 
-
-class Ship():
+class Ship(Sprite):
     """" A class for ship object"""
     def __init__(self, screen, ai_settings):
+        super().__init__()
         self.moving_right = False
         self.moving_left = False
 
